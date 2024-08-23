@@ -6,16 +6,25 @@
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<div class="agileits-navi_search">
 					<form action="#" method="post">
-						<select id="agileinfo-nav_search" name="agileinfo_search" class="border" required="">
-							<option value="">Danh mục sản phẩm</option>
-							<?php
-							while($row_category = mysqli_fetch_array($sql_category)) {
-							?>
-							<option value="<?php echo $row_category['category_id'] ?>"><?php echo $row_category['category_name'] ?></option>
-							<?php
-							 }
-							?>
-						</select>
+					<select id="agileinfo-nav_search" name="agileinfo_search" class="border" required="" onchange="navigateToCategory(this)">
+    <option value="">Danh mục sản phẩm</option>
+    <?php
+    while($row_category = mysqli_fetch_array($sql_category)) {
+    ?>
+    <option value="<?php echo $row_category['category_id'] ?>"><?php echo $row_category['category_name'] ?></option>
+    <?php
+     }
+    ?>
+</select>
+
+<script>
+function navigateToCategory(selectElement) {
+    var categoryId = selectElement.value;
+    if(categoryId) {
+        window.location.href = 'index.php?quanly=danhmuc&id=' + categoryId;
+    }
+}
+</script>
 					</form>
 				</div>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
