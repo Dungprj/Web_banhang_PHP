@@ -35,7 +35,7 @@
 								}else{
 									$id_khachhang = '';
 								}
-								$sql_select = mysqli_query($con,"SELECT * FROM tbl_giaodich WHERE tbl_giaodich.khachhang_id='$id_khachhang' GROUP BY tbl_giaodich.magiaodich"); 
+								$sql_select = mysqli_query($con,"SELECT * FROM tbl_giaodich WHERE tbl_giaodich.khachhang_id='$id_khachhang' GROUP BY tbl_giaodich.ngaythang DESC"); 
 								?> 
 								<table class="table table-bordered ">
 									<tr>

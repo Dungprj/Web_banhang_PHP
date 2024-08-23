@@ -63,6 +63,8 @@ if(!isset($_SESSION['khachhang_id']))
 
  
  }elseif(isset($_POST['thanhtoan'])){
+
+
  	$name = $_POST['name'];
  	$phone = $_POST['phone'];
  	$email = $_POST['email'];
@@ -73,7 +75,7 @@ if(!isset($_SESSION['khachhang_id']))
  
  	$sql_khachhang = mysqli_query($con,"INSERT INTO tbl_khachhang(name,phone,email,address,note,giaohang,password) values ('$name','$phone','$email','$address','$note','$giaohang','$password')");
  	if($sql_khachhang){
- 		$sql_select_khachhang = mysqli_query($con,"SELECT * FROM tbl_khachhang ORDER BY khachhang_id DESC LIMIT 1");
+ 		$sql_select_khachhang = mysqli_query($con,"SELECT * FROM tbl_khachhang where khachhang_id = $khachhang_id ORDER BY khachhang_id DESC LIMIT 1");
  		$mahang = rand(0,9999);
  		$row_khachhang = mysqli_fetch_array($sql_select_khachhang);
  		$khachhang_id = $row_khachhang['khachhang_id'];
@@ -84,7 +86,7 @@ if(!isset($_SESSION['khachhang_id']))
 	 		$soluong = $_POST['thanhtoan_soluong'][$i];
 	 		$sql_donhang = mysqli_query($con,"INSERT INTO tbl_donhang(sanpham_id,khachhang_id,soluong,mahang) values ('$sanpham_id','$khachhang_id','$soluong','$mahang')");
 	 		$sql_giaodich = mysqli_query($con,"INSERT INTO tbl_giaodich(sanpham_id,soluong,magiaodich,khachhang_id) values ('$sanpham_id','$soluong','$mahang','$khachhang_id')");
-	 		$sql_delete_thanhtoan = mysqli_query($con,"DELETE FROM tbl_giohang WHERE sanpham_id='$sanpham_id'");
+	 		$sql_delete_thanhtoan = mysqli_query($con,"DELETE FROM tbl_giohang WHERE sanpham_id='$sanpham_id' and khachhang_id = $khachhang_id");
  		}
 
  	}
@@ -97,10 +99,11 @@ if(!isset($_SESSION['khachhang_id']))
 	 		$soluong = $_POST['thanhtoan_soluong'][$i];
 	 		$sql_donhang = mysqli_query($con,"INSERT INTO tbl_donhang(sanpham_id,khachhang_id,soluong,mahang) values ('$sanpham_id','$khachhang_id','$soluong','$mahang')");
 	 		$sql_giaodich = mysqli_query($con,"INSERT INTO tbl_giaodich(sanpham_id,soluong,magiaodich,khachhang_id) values ('$sanpham_id','$soluong','$mahang','$khachhang_id')");
-	 		$sql_delete_thanhtoan = mysqli_query($con,"DELETE FROM tbl_giohang WHERE sanpham_id='$sanpham_id'");
+	 		$sql_delete_thanhtoan = mysqli_query($con,"DELETE FROM tbl_giohang WHERE sanpham_id='$sanpham_id' and khachhang_id = $khachhang_id ");
  		}
 
- 	
+		 echo "<script>alert('Đặt hàng thành công !')</script>";
+	
  }
 ?>
 

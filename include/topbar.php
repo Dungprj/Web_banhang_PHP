@@ -1,4 +1,14 @@
 <?php
+
+if(isset($_REQUEST["signout"]))
+{
+	
+session_destroy();
+header("Location:index.php");
+
+
+
+}
 	// session_destroy();
 	// unset('dangnhap');
 	if(isset($_POST['dangnhap_home'])) {
@@ -14,7 +24,7 @@
 				$_SESSION['dangnhap_home'] = $row_dangnhap['name'];
 				$_SESSION['khachhang_id'] = $row_dangnhap['khachhang_id'];
 				
-				header('Location: index.php?quanly=giohang');
+				header('Location: index.php');
 			}else{
 				echo '<script>alert("Tài khoản mật khẩu sai")</script>';
 			}
@@ -34,7 +44,7 @@
  		$_SESSION['dangnhap_home'] = $name;
 		$_SESSION['khachhang_id'] = $row_khachhang['khachhang_id'];
 		
- 		header('Location:index.php?quanly=giohang');
+ 		header('Location:index.php?');
 	}
 ?> 
 
@@ -45,7 +55,7 @@
 				<div class="col-lg-4 header-most-top">
 					
 				</div>
-				<div class="col-lg-8 header-right mt-lg-0 mt-2">
+				<form class="col-lg-8 header-right mt-lg-0 mt-2">
 					<!-- header lists -->
 					<ul>
 
@@ -63,17 +73,38 @@
 						<li class="text-center border-right text-white">
 							<i class="fas fa-phone mr-2"></i> 0909999999
 						</li>
+						<?php
+						if(isset($_SESSION['dangnhap_home'])){ 
+							
+						?>
 						<li class="text-center border-right text-white">
-							<a href="#" data-toggle="modal" data-target="#dangnhap" class="text-white">
+							<a href="" data-toggle="modal" data-target="#taikhoan" class="text-white">
+								<i class="fas fa-solid fa-user mr-2"></i> Tài khoản</a>
+						</li>
+						
+						<li class="text-center text-white">
+							<button type="submit" style="background-color:#F45C5D; color:black;" name="signout" value="1"><i class="fas fa-sign-out-alt mr-2"></i>Đăng suất </a></button>
+								
+						</li>
+						<?php
+						}?>
+
+						<?php if(!isset($_SESSION['dangnhap_home'])){ ?>
+						<li class="text-center border-right text-white">
+							<a href="" data-toggle="modal" data-target="#dangnhap" class="text-white">
 								<i class="fas fa-sign-in-alt mr-2"></i> Đăng nhập </a>
 						</li>
 						<li class="text-center text-white">
-							<a href="#" data-toggle="modal" data-target="#dangky" class="text-white">
+							<a href="" data-toggle="modal" data-target="#dangky" class="text-white">
 								<i class="fas fa-sign-out-alt mr-2"></i>Đăng ký </a>
 						</li>
+
+						<?php
+					}?>
+						
 					</ul>
 					<!-- //header lists -->
-				</div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -89,7 +120,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form action="#" method="post">
+					<form  method="post">
 						<div class="form-group">
 							<label class="col-form-label">Email</label>
 							<input type="text" class="form-control" placeholder=" " name="email_login" required="">

@@ -46,6 +46,7 @@
 
 <body>
 	<?php
+	
 	include('include/topbar.php'); 
 	include('include/menu.php');
 	include('include/slider.php');
@@ -70,6 +71,9 @@
 		include('include/chitiettin.php');
 	}elseif ($tam=='xemdonhang') {
 		include('include/xemdonhang.php');
+	}
+	elseif ($tam=='dangnhap') {
+		include('include/dangnhap.php');
 	}else{
 		include('include/home.php'); 
 	}
