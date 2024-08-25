@@ -1,6 +1,7 @@
 
 	<!-- footer -->
-	<footer>
+	<footer style="position:relative;">
+		
 		<div class="footer-top-first">
 			<div class="container py-md-5 py-sm-4 py-3">
 				<!-- footer first section -->

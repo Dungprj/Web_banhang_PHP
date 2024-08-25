@@ -1,5 +1,11 @@
 <?php
 
+$sotiengiam = 0;
+$thanhtien = 0;
+
+include  'C:\xampp\htdocs\bandienmay\bandienmay\include\models\VeGiamGia.php';
+
+
 if(isset($_SESSION['khachhang_id']))
 {
 	$khachhang_id = $_SESSION['khachhang_id'];
@@ -91,23 +97,163 @@ if(!isset($_SESSION['khachhang_id']))
 
  	}
  }elseif(isset($_POST['thanhtoandangnhap'])){
+	$voucher_id = $_SESSION['id_voucher_select'];
 
  	$khachhang_id = $_SESSION['khachhang_id'];
  	$mahang = rand(0,9999);	
  	for($i=0;$i<count($_POST['thanhtoan_product_id']);$i++){
 	 		$sanpham_id = $_POST['thanhtoan_product_id'][$i];
 	 		$soluong = $_POST['thanhtoan_soluong'][$i];
-	 		$sql_donhang = mysqli_query($con,"INSERT INTO tbl_donhang(sanpham_id,khachhang_id,soluong,mahang) values ('$sanpham_id','$khachhang_id','$soluong','$mahang')");
-	 		$sql_giaodich = mysqli_query($con,"INSERT INTO tbl_giaodich(sanpham_id,soluong,magiaodich,khachhang_id) values ('$sanpham_id','$soluong','$mahang','$khachhang_id')");
+	 		$sql_donhang = mysqli_query($con,"INSERT INTO tbl_donhang(sanpham_id,khachhang_id,soluong,mahang,voucher_id) values ('$sanpham_id','$khachhang_id','$soluong','$mahang',$voucher_id)");
+	 		$sql_giaodich = mysqli_query($con,"INSERT INTO tbl_giaodich(sanpham_id,soluong,magiaodich,khachhang_id,voucher_id) values ('$sanpham_id','$soluong','$mahang','$khachhang_id',$voucher_id)");
 	 		$sql_delete_thanhtoan = mysqli_query($con,"DELETE FROM tbl_giohang WHERE sanpham_id='$sanpham_id' and khachhang_id = $khachhang_id ");
  		}
 
 		 echo "<script>alert('Đặt hàng thành công !')</script>";
 	
  }
+
+
+ if (isset($_POST['select_voucher'])) {
+    
+    $id_GiamGia = $_POST['id_voucher'];
+	$_SESSION['id_voucher_select'] = $id_GiamGia;
+    $tongSoTien = $_POST['tongSoTien'];
+
+    $result =  Tiketdiscount::applyVoucher($id_GiamGia, $tongSoTien);
+
+    $status = $result["isSuccess"];
+    $message = $result["message"];
+
+    $khachhang_id = $_SESSION['khachhang_id'];
+   
+	$sotiengiam = $result["sotiengiam"];
+
+
+    if($status)
+    {
+        $sql = mysqli_query($con, "INSERT INTO tbl_usevoucher(khachhang_id,voucher_id,ngaySudung) values('$khachhang_id','$id_GiamGia',default)");
+       
+    }else
+    {
+        echo "<script>alert($message);<script>";
+    }
+
+
+
+   
+}
 ?>
 
 <!-- checkout page -->
+<style>
+	#magiamgia{
+    width:700px;
+    height:750px; 
+    background-color:#ffffff;
+    position:fixed;
+    z-index: 999999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	display:none;
+	outline-style: double;
+    
+
+}
+.base_magiamgia{
+    
+    width: 90%;
+    height:25%;
+    margin-top:5%;
+    margin-left:2%;
+    background-color: white;
+    justify-content:space-between;
+    align-content: center;
+    border:solid 1px orange;
+    border-style: groove;
+    display:flex;
+}
+.noidung_magiamgia
+{
+    width: 100%;
+    height: 100%;
+    padding-right:30%;
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    padding-left:5%;
+}
+.bl_radio_magiamgia{
+    width: 10%;
+    height: 100%;
+    position:absolute;
+    right:1%;
+    top:45%;
+
+    
+
+
+    
+}
+
+.radio_magiamgia {
+        transform: scale(2.5); /* Tăng kích thước của nút radio */
+        -webkit-transform: scale(2.5); /* Hỗ trợ cho trình duyệt WebKit */
+        -moz-transform: scale(2.5); /* Hỗ trợ cho trình duyệt Firefox */
+        -ms-transform: scale(2.5); /* Hỗ trợ cho trình duyệt Internet Explorer */
+        -o-transform: scale(2.5); /* Hỗ trợ cho trình duyệt Opera */
+        margin: 10px; /* Thêm margin nếu cần */
+    }
+
+.bl_timkiemmagiamgia{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color:#bebebe;
+    
+    
+
+}
+.inp_timkiem{
+    margin-left:5%;
+    margin-right:5%;
+    margin-top:5%;
+    margin-bottom:5%;
+    width: 80%;
+    
+}
+.btn-apdungmagiamgia
+{
+    width: 25%;
+    height: 25%;
+    margin-right:5%;
+}
+.list-magiamgia{
+    width: 100%;
+    height:75%;
+    overflow-y: auto;
+}
+.noidung-and-radio
+{
+    width: 95%;
+    height:100;
+    position:relative;
+}
+.bl_footer-magiamgia{
+    width: 95%;
+    
+    display: flex;
+    justify-content: end;
+    margin-top:2%;
+    
+}
+
+
+</style>
+
+
+
 	<div class="privacy py-sm-5 py-4">
 		<div class="container py-xl-4 py-lg-2">
 			<!-- tittle heading -->
@@ -124,6 +270,13 @@ if(!isset($_SESSION['khachhang_id']))
 				
 			<!-- //tittle heading -->
 			<div class="checkout-right">
+				
+
+			<!-- test model đăng nhập begin -->
+					<!-- modals -->
+			
+			<!-- test model đăng nhập end  -->
+
 			<?php
 			$sql_lay_giohang = mysqli_query($con,"SELECT * FROM tbl_giohang where khachhang_id = '$khachhang_id' ORDER BY giohang_id DESC");
 
@@ -154,6 +307,9 @@ if(!isset($_SESSION['khachhang_id']))
 							$subtotal = $row_fetch_giohang['soluong'] * $row_fetch_giohang['giasanpham'];
 							$total+=$subtotal;
 							$i++;
+							$tongTienGlobal = $total;
+							$thanhtien = $total;
+							
 						?>
 							<tr class="rem1">
 								<td class="invert"><?php echo $i ?></td>
@@ -179,7 +335,20 @@ if(!isset($_SESSION['khachhang_id']))
 							} 
 							?>
 							<tr>
-								<td colspan="7">Tổng tiền : <?php echo number_format($total).'vnđ' ?></td>
+								<td colspan="6" style="text-align: right;">Voucher: </td>
+								<td><p id="open" style="color:blue; cursor:pointer;">Chọn mã giảm giá</p></td>
+							</tr>
+							
+							<tr>
+								<td colspan="7" style="text-align: right;">Tổng tiền : <?php echo number_format($total).' vnđ' ?></td>
+
+							</tr>
+							<tr>
+								<td colspan="7" style="text-align: right;"> -- <?php echo number_format($sotiengiam).' vnđ' ?></td>
+
+							</tr>
+							<tr>
+								<td colspan="7" style="text-align: right;">Thành tiền : <?php echo number_format($thanhtien-$sotiengiam).' vnđ'  ?></td>
 
 							</tr>
 							<tr>
@@ -210,6 +379,68 @@ if(!isset($_SESSION['khachhang_id']))
 					</table>
 					</form>
 				</div>
+				<!-- form ma giảm giá-->
+			<form action="" method="post" id="magiamgia" >
+				<input type="hidden" name="tongSoTien" value=<?php echo $total;?>>
+				<div class="bl_timkiemmagiamgia">
+					<input class="inp_timkiem form-control" type="text" placeholder="Nhập mã giảm giá">
+					<button type="button" class="btn btn-light btn-apdungmagiamgia">Áp dụng</button>
+				</div>
+
+
+				<?php
+			$sql_lay_magiamgia = mysqli_query($con,"SELECT * FROM tbl_tiketdiscount");
+
+			?>
+				<div class="list-magiamgia">
+
+				<?php
+				while($row_fetch_magiamgia = mysqli_fetch_array($sql_lay_magiamgia)){ 
+				?>
+
+					<div class="base_magiamgia">
+						
+						
+						<img src="https://down-vn.img.susercontent.com/file/01ad529d780769c418b225c96cb8a3d7" alt="magiamgia" style="width:30%;height:100%;">
+						<div class="noidung-and-radio">
+							<div class="noidung_magiamgia">
+								<p> Mã giảm giá <?php echo $row_fetch_magiamgia["name"]?> . Giảm tổng giá trị đơn hàng lên đến <?php echo $row_fetch_magiamgia["phanTramGiam"]?> %</p>
+								<p> </p>
+								<p> Từ <?php echo $row_fetch_magiamgia["ngayBatDau"]?></p>
+								<p> Đến <?php echo $row_fetch_magiamgia["ngayKetThuc"]?></p>
+								<p style="text-align: right; position:absolute; bottom:1%;right:1%; font-size:12px;"> Chỉ còn : <?php echo $row_fetch_magiamgia["soLuong"]?></p>
+								<input type="hidden" name="id_voucher" value=<?php echo $row_fetch_magiamgia["id"]?>>
+							</div>
+							<div class="bl_radio_magiamgia">
+							<input  class="radio_magiamgia form-check-input" type="radio" name="selected_voucher"  >
+							</div>
+						</div>
+					</div>
+				<?php
+				}
+				?>
+
+					
+
+
+					
+
+					
+
+					
+
+
+				</div>
+				<div class="bl_footer-magiamgia">
+					<button id="close" type="button" class="btn btn-light">Trở Lại</button>
+					<button id="chonvoucher" type="submit" class="btn btn-danger" name="select_voucher" style="margin-left:5%;margin-right:3%;">OK</button>
+				</div>
+				
+				
+				
+				
+
+			</form>
 			</div>
 			<?php
 			if(!isset($_SESSION['dangnhap_home'])){ 
@@ -278,3 +509,39 @@ if(!isset($_SESSION['khachhang_id']))
 		</div>
 	</div>
 	<!-- //checkout page -->
+
+
+	<script>
+    const openBtn = document.getElementById('open');
+    const closeBtn = document.getElementById('close');
+    const myDiv = document.getElementById('magiamgia');
+	
+    const chonVoucher = document.getElementById('chonvoucher');
+	
+	chonVoucher.addEventListener('click', function() {
+        myDiv.style.display = 'none';
+		
+    });
+
+
+    openBtn.addEventListener('click', function() {
+        myDiv.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', function() {
+        myDiv.style.display = 'none';
+		
+    });
+
+
+
+	//ajax ap voucher
+	
+
+
+
+
+
+
+</script>
+

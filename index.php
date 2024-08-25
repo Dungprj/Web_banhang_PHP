@@ -42,6 +42,8 @@
 	    rel="stylesheet">
 	<!-- //web fonts -->
 
+	
+
 </head>
 
 <body>
@@ -63,6 +65,7 @@
 		include('include/chitietsp.php');
 	}elseif($tam=='giohang') {
 		include('include/giohang.php');
+		
 	}elseif ($tam=='timkiem') {
 		include('include/timkiem.php');
 	}elseif ($tam=='tintuc') {

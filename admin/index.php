@@ -17,7 +17,7 @@
 			if($count>0){
 				$_SESSION['dangnhap'] = $row_dangnhap['admin_name'];
 				$_SESSION['admin_id'] = $row_dangnhap['admin_id'];
-				header('Location: dashboard.php');
+				header('Location: xulybaiviet.php');
 			}else{
 				echo '<p>Tài khoản hoặc mật khẩu sai</p>';
 			}

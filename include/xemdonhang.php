@@ -108,11 +108,16 @@
 										<th>Số lượng</th>
 										<th>Ngày đặt</th>
 										
+										
 									</tr>
 									<?php
+									$magiaodich = null;
+									$mavoucher = null;
 									$i = 0;
 									while($row_donhang = mysqli_fetch_array($sql_select)){ 
 										$i++;
+										$magiaodich = $row_donhang['magiaodich'];
+										$mavoucher = $row_donhang['voucher_id'];
 									?> 
 									<tr>
 										<td><?php echo $i; ?></td>
@@ -124,12 +129,24 @@
 										<td><?php echo $row_donhang['soluong']; ?></td>
 										
 										<td><?php echo $row_donhang['ngaythang'] ?></td>
+
+										
+										
+
 									
 										
 									</tr>
+									
 									 <?php
 									} 
 									?> 
+									<tr  style="border: 2px solid black;">
+										<td><strong>Mã giao dịch</strong></td>
+										<td ><?php echo $magiaodich ?></td>
+										<td ><strong>Voucher</strong></td>
+										<td ><?php echo $mavoucher; ?></td>
+
+									</tr>
 								</table>
 							</div>
 							</div>
