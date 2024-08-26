@@ -2,6 +2,9 @@
 
 $sotiengiam = 0;
 $thanhtien = 0;
+$isapply_voucher = null;
+
+
 
 include  'C:\xampp\htdocs\bandienmay\bandienmay\include\models\VeGiamGia.php';
 
@@ -108,17 +111,24 @@ if(!isset($_SESSION['khachhang_id']))
 	 		$sql_giaodich = mysqli_query($con,"INSERT INTO tbl_giaodich(sanpham_id,soluong,magiaodich,khachhang_id,voucher_id) values ('$sanpham_id','$soluong','$mahang','$khachhang_id',$voucher_id)");
 	 		$sql_delete_thanhtoan = mysqli_query($con,"DELETE FROM tbl_giohang WHERE sanpham_id='$sanpham_id' and khachhang_id = $khachhang_id ");
  		}
+		 $soLuongVeHienTai = Tiketdiscount::getSoLuongHienTai($voucher_id);
+		 Tiketdiscount::setSoLuongHienTai($voucher_id,$soLuongVeHienTai-1);
+		 $sqldungvoucher = mysqli_query($con, "INSERT INTO tbl_usevoucher(khachhang_id,voucher_id,ngaySudung) values('$khachhang_id','$id_GiamGia',default)");
 
 		 echo "<script>alert('Đặt hàng thành công !')</script>";
 	
  }
 
 
- if (isset($_POST['select_voucher'])) {
+ if (isset($_POST['select_voucher']) && isset($_POST['id_voucher'])) {
     
+	$isapply_voucher = true;
+
     $id_GiamGia = $_POST['id_voucher'];
-	$_SESSION['id_voucher_select'] = $id_GiamGia;
+	
+	$_SESSION['id_voucher_select'] = $_POST['id_voucher'];
     $tongSoTien = $_POST['tongSoTien'];
+	
 
     $result =  Tiketdiscount::applyVoucher($id_GiamGia, $tongSoTien);
 
@@ -128,20 +138,6 @@ if(!isset($_SESSION['khachhang_id']))
     $khachhang_id = $_SESSION['khachhang_id'];
    
 	$sotiengiam = $result["sotiengiam"];
-
-
-    if($status)
-    {
-        $sql = mysqli_query($con, "INSERT INTO tbl_usevoucher(khachhang_id,voucher_id,ngaySudung) values('$khachhang_id','$id_GiamGia',default)");
-       
-    }else
-    {
-        echo "<script>alert($message);<script>";
-    }
-
-
-
-   
 }
 ?>
 
@@ -344,7 +340,18 @@ if(!isset($_SESSION['khachhang_id']))
 
 							</tr>
 							<tr>
-								<td colspan="7" style="text-align: right;"> -- <?php echo number_format($sotiengiam).' vnđ' ?></td>
+								
+								<td colspan="6" style="text-align: right;">
+								<?php 
+								if($isapply_voucher != null){
+									echo "<strong>Đã áp dụng mã giảm giá</strong>";
+								}else{
+									echo "";
+								} 
+								?> 
+								</td>
+
+								<td colspan="1" style="text-align: right;"> -- <?php echo number_format($sotiengiam).' vnđ' ?></td>
 
 							</tr>
 							<tr>
@@ -388,14 +395,17 @@ if(!isset($_SESSION['khachhang_id']))
 				</div>
 
 
-				<?php
-			$sql_lay_magiamgia = mysqli_query($con,"SELECT * FROM tbl_tiketdiscount");
+				
+			
 
-			?>
+			
 				<div class="list-magiamgia">
 
 				<?php
+				$sql_lay_magiamgia = mysqli_query($con,"SELECT * FROM tbl_tiketdiscount");
 				while($row_fetch_magiamgia = mysqli_fetch_array($sql_lay_magiamgia)){ 
+					if($row_fetch_magiamgia["soLuong"]>0)
+					{
 				?>
 
 					<div class="base_magiamgia">
@@ -409,13 +419,53 @@ if(!isset($_SESSION['khachhang_id']))
 								<p> Từ <?php echo $row_fetch_magiamgia["ngayBatDau"]?></p>
 								<p> Đến <?php echo $row_fetch_magiamgia["ngayKetThuc"]?></p>
 								<p style="text-align: right; position:absolute; bottom:1%;right:1%; font-size:12px;"> Chỉ còn : <?php echo $row_fetch_magiamgia["soLuong"]?></p>
-								<input type="hidden" name="id_voucher" value=<?php echo $row_fetch_magiamgia["id"]?>>
+								
+								
 							</div>
 							<div class="bl_radio_magiamgia">
-							<input  class="radio_magiamgia form-check-input" type="radio" name="selected_voucher"  >
+							<input  class="radio_magiamgia form-check-input" type="radio" name="id_voucher" value=<?php echo $row_fetch_magiamgia["id"]?>  >
 							</div>
 						</div>
 					</div>
+				<?php
+					}else{
+					?>
+
+					<div class="base_magiamgia" style="cursor: not-allowed;">
+						
+						
+						<img src="https://down-vn.img.susercontent.com/file/01ad529d780769c418b225c96cb8a3d7" alt="magiamgia" style="width:30%;height:100%;">
+						<div class="noidung-and-radio" >
+							<div class="noidung_magiamgia">
+								<p> Mã giảm giá <?php echo $row_fetch_magiamgia["name"]?> . Giảm tổng giá trị đơn hàng lên đến <?php echo $row_fetch_magiamgia["phanTramGiam"]?> %</p>
+								<p> </p>
+								<p> Từ <?php echo $row_fetch_magiamgia["ngayBatDau"]?></p>
+								<p> Đến <?php echo $row_fetch_magiamgia["ngayKetThuc"]?></p>
+								<p style="text-align: right; position:absolute; bottom:1%;right:1%; font-size:12px;"> Chỉ còn : <?php echo $row_fetch_magiamgia["soLuong"]?></p>
+								
+								
+							</div>
+							<div class="bl_radio_magiamgia">
+							<input  class="radio_magiamgia form-check-input" type="radio" disabled style="cursor: not-allowed;" name="id_voucher" value=<?php echo $row_fetch_magiamgia["id"]?>  >
+							</div>
+						</div>
+					</div>
+
+
+
+
+					<?php }?>
+
+
+
+
+
+
+
+
+
+
+				
 				<?php
 				}
 				?>

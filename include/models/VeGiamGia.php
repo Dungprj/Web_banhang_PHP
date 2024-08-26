@@ -129,7 +129,7 @@ class Tiketdiscount {
         if($soLuongVeHienTai>0)
         {
             $sotiengiam = $tinhTienGiamGia->layGiamGia()*$orderAmount;
-            Tiketdiscount::setSoLuongHienTai($idVoucher,$soLuongVeHienTai-1);
+           
 
             return ['isSuccess' => true, 'sotiengiam' => $sotiengiam,'message'=>null];
 
