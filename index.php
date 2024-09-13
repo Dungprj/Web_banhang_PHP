@@ -74,6 +74,8 @@
 		include('include/chitiettin.php');
 	}elseif ($tam=='xemdonhang') {
 		include('include/xemdonhang.php');
+	}elseif ($tam=='taikhoan') {
+			include('include/taikhoan.php');
 	}
 	elseif ($tam=='dangnhap') {
 		include('include/dangnhap.php');
