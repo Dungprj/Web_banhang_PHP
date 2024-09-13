@@ -107,7 +107,7 @@
 										<th>Tên sản phẩm</th>
 										<th>Số lượng</th>
 										<th>Ngày đặt</th>
-										
+										<th>thành tiền<nav></nav></th>
 										
 									</tr>
 									<?php

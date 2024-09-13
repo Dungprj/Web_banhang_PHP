@@ -80,12 +80,15 @@ header("Location:index.php");
 							
 						?>
 						<li class="text-center border-right text-white">
-							<a href="" data-toggle="modal" data-target="#taikhoan" class="text-white">
-								<i class="fas fa-solid fa-user mr-2"></i> Tài khoản</a>
+							<!-- <a href="" data-toggle="modal" data-target="#taikhoan" class="text-white"> -->
+							<!-- <a href="index.php?quanly=taikhoan&khachhang=<?php echo $_SESSION['khachhang_id'] ?>" class="text-white">
+								<i class="fas fa-solid fa-user mr-2"></i> Tài khoản</a> -->
+							<a href="index.php?quanly=taikhoan&khachhang=<?php echo $_SESSION['khachhang_id'] ?>" class="text-white">
+								<i class="fas fa-solid fa-user mr-2"></i><?php echo $_SESSION['dangnhap_home'] ?></a>
 						</li>
 						
 						<li class="text-center text-white">
-							<button type="submit" style="background-color:#F45C5D; color:black;" name="signout" value="1"><i class="fas fa-sign-out-alt mr-2"></i>Đăng suất </a></button>
+							<button type="submit" style="background-color:#F45C5D; color:black;" name="signout" value="1"><i class="fas fa-sign-out-alt mr-2"></i>Đăng xuất </a></button>
 								
 						</li>
 						<?php
